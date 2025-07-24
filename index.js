@@ -1,19 +1,24 @@
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const req = async (url) => {
+    await delay(2000);
     const data = await fetch(url);
     return data.json();
 };
 
-// async function show_products() {
-    req("https://fakestoreapi.com/products").then((info)=>{
-        console.log(info);
-        
-    if (Array.isArray(info) && info.length > 0) {
-            info.forEach(show)
+function show_products() {
+    document.querySelector(".modal-loader").classList.add("active")
+    req("https://fakestoreapi.com/products")
+    .then((data)=>{
+        console.log(data);
+        if (Array.isArray(data) && data.length > 0) {
+            data.forEach(show)
         }
-    }).catch((error) => {
-        console.error(error)
+        document.querySelector(".modal-loader").classList.remove("active")
+    })
+    .catch((error) => {
+        throw new Error(error)
     });
-// }
+}
 
 function show(obj, index) {
     const {category, description, id, image, price, rating, title} = obj;
@@ -22,7 +27,7 @@ function show(obj, index) {
     document.querySelector("tbody").insertAdjacentHTML('beforeend', pattern)
 }
 
-// document.querySelector(".getProducts").addEventListener("click", show_products)
+document.querySelector(".getProducts").addEventListener("click", show_products)
 
 // category:"men's clothing"
 // description:"Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday"
